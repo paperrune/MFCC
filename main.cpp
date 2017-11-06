@@ -156,7 +156,7 @@ void MFCC(int length_frame, int length_DFT, int number_coefficients, int number_
 	}
 	DCT(1, number_filterbanks, filterbank);
 
-	for (int i = 0; i < number_coefficients - 1; i++){
+	for (int i = 0; i < number_coefficients; i++){
 		feature_vector[i] = filterbank[i];
 	}
 
