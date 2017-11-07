@@ -38,7 +38,7 @@ public:
 	void Play(int milliseconds);
 	void Record(int milliseconds);
 
-	void Set_Buffer(int index, float value);
+	void Set_Buffer(int index, double value);
 	double Get_Buffer(int index);
 
 	std::thread Record_Thread(int milliseconds){
