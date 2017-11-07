@@ -100,11 +100,32 @@ void Wav::WavToBuffer(){
 		break;
 	}
 }
-void Wav::Create(unsigned char *data, int length_wav){
+void Wav::Create(unsigned char data[], int length_wav){
 	this->data = (unsigned char*)realloc(this->data, this->length_wav = length_wav);
 
 	for (int i = 0; i < length_wav; i++){
 		this->data[i] = data[i];
+	}
+}
+void Wav::Create(int length_buffer, double buffer[]){
+	switch (waveformatex.wBitsPerSample){
+	case 8:
+		buffer8 = (char*)realloc(buffer8, sizeof(char) * length_buffer);
+		break;
+	case 16:
+		buffer16 = (short*)realloc(buffer16, sizeof(short) * length_buffer);
+		break;
+	case 32:
+		buffer32 = (float*)realloc(buffer32, sizeof(float) * length_buffer);
+		break;
+	default:
+		fprintf(stderr, "[Create], [invalid wBitsPerSample: %d", waveformatex.wBitsPerSample);
+		return;
+	}
+	this->length_buffer = length_buffer;
+
+	for (int i = 0; i < length_buffer; i++){
+		Set_Buffer(i, buffer[i]);
 	}
 }
 void Wav::Load(char path[]){
@@ -219,6 +240,7 @@ void Wav::Play(int milliseconds){
 		wavehdr.lpData = (LPSTR)buffer32;
 		break;
 	default:
+		fprintf(stderr, "[Play], [invalid wBitsPerSample: %d", waveformatex.wBitsPerSample);
 		return;
 	}
 	wavehdr.dwBufferLength = waveformatex.wBitsPerSample / 8 * length_buffer;
@@ -253,6 +275,7 @@ void Wav::Record(int milliseconds){
 		wavehdr.lpData = (LPSTR)(buffer32 = (float*)realloc(buffer32, sizeof(float)* (length_buffer = (int)(waveformatex.nSamplesPerSec * milliseconds / 1000.0))));
 		break;
 	default:
+		fprintf(stderr, "[Record], [invalid wBitsPerSample: %d", waveformatex.wBitsPerSample);
 		return;
 	}
 	wavehdr.dwBufferLength = waveformatex.wBitsPerSample / 8 * length_buffer;
@@ -283,13 +306,18 @@ void Wav::Record(int milliseconds){
 }
 
 void Wav::Set_Buffer(int index, double value){
-	switch (waveformatex.wBitsPerSample){
-	case 8:
-		buffer8[index] = (char)(value * 127.5 - 0.5);
-	case 16:
-		buffer16[index] = (short)(value * 32767.5 - 0.5);
-	case 32:
-		buffer32[index] = (float)value;
+	if (0 <= index && index < length_buffer){
+		switch (waveformatex.wBitsPerSample){
+		case 8:
+			buffer8[index] = (char)(value * 127.5 - 0.5);
+			break;
+		case 16:
+			buffer16[index] = (short)(value * 32767.5 - 0.5);
+			break;
+		case 32:
+			buffer32[index] = (float)value;
+			break;
+		}
 	}
 }
 double Wav::Get_Buffer(int index){
