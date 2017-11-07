@@ -174,7 +174,6 @@ int main(){
 
 	int number_feature_vectors;
 	int nSamplesPerSec;
-	int wBitsPerSample;
 
 	double pi = 3.14159265358979323846;
 
@@ -182,7 +181,7 @@ int main(){
 
 	Wav wav("BalloonPop01.wav");
 
-	wav.Get_Properties(0, &nSamplesPerSec, &wBitsPerSample);
+	wav.Get_Properties(0, &nSamplesPerSec, 0);
 	wav.WavToBuffer();
 	wav.Play();
 
