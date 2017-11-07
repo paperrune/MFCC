@@ -29,7 +29,8 @@ public:
 
 	void BufferToWav();
 	void WavToBuffer();
-	void Create(unsigned char *data, int length_wav);
+	void Create(unsigned char data[], int length_wav);
+	void Create(int length_buffer, double buffer[]);
 	void Load(char path[]);
 	void Save(char path[]);
 	void Get_Properties(int *nChannels, int *nSamplesPerSec, int *wBitsPerSample);
