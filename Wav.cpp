@@ -293,15 +293,15 @@ void Wav::Set_Buffer(int index, double value){
 	}
 }
 double Wav::Get_Buffer(int index){
-	if (length_buffer <= index || index < 0) return 0;
-
-	switch (waveformatex.wBitsPerSample){
-	case 8:
-		return (buffer8[index] + 0.5) / 127.5;
-	case 16:
-		return (buffer16[index] + 0.5) / 32767.5;
-	case 32:
-		return buffer32[index];
+	if (0 <= index && index < length_buffer){
+		switch (waveformatex.wBitsPerSample){
+		case 8:
+			return (buffer8[index] + 0.5) / 127.5;
+		case 16:
+			return (buffer16[index] + 0.5) / 32767.5;
+		case 32:
+			return buffer32[index];
+		}
 	}
 	return 0;
 }
