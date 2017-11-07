@@ -281,3 +281,26 @@ void Wav::Record(int milliseconds){
 	}
 	waveInClose(hwavein);
 }
+
+void Wav::Set_Buffer(int index, float value){
+	switch (waveformatex.wBitsPerSample){
+	case 8:
+		buffer8[index] = value;
+	case 16:
+		buffer16[index] = value;
+	case 32:
+		buffer32[index] = value;
+	}
+}
+double Wav::Get_Buffer(int index){
+	if (length_buffer <= index || index < 0) return 0;
+
+	switch (waveformatex.wBitsPerSample){
+	case 8:
+		return buffer8[index] / 128.0;
+	case 16:
+		return buffer16[index] / 32768.0;
+	case 32:
+		return buffer32[index];
+	}
+}
