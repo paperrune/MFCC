@@ -3,6 +3,10 @@
 
 class Wav{
 private:
+	char *buffer8;
+	short *buffer16;
+	float *buffer32;
+
 	HWAVEIN hwavein;
 
 	HWAVEOUT hwaveout;
@@ -12,10 +16,6 @@ private:
 	WAVEHDR wavehdr;
 public:
 	bool recording;
-
-	char *buffer8;
-	short *buffer16;
-	float *buffer32;
 
 	unsigned char *data;
 
@@ -37,6 +37,9 @@ public:
 	void Play();
 	void Play(int milliseconds);
 	void Record(int milliseconds);
+
+	void Set_Buffer(int index, float value);
+	double Get_Buffer(int index);
 
 	std::thread Record_Thread(int milliseconds){
 		return std::thread([=]{ Record(milliseconds); });
