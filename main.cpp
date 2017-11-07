@@ -1,4 +1,4 @@
-﻿#define _CRT_SECURE_NO_WARNINGS
+#define _CRT_SECURE_NO_WARNINGS
 
 #include <math.h>
 #include <stdio.h>
@@ -196,28 +196,14 @@ int main(){
 	for (int i = 0; i <= wav.length_buffer - length_frame; i += stride){
 		double *frame = new double[length_frame];
 
+		// pre-emphasis
 		for (int j = 0; j < length_frame; j++){
 			if (i + j < wav.length_buffer){
-				switch (wBitsPerSample){
-				case 8:
-					frame[j] = wav.buffer8[i + j] / 128.0;
-					break;
-				case 16:
-					frame[j] = wav.buffer16[i + j] / 32768.0;
-					break;
-				case 32:
-					frame[j] = wav.buffer32[i + j];
-					break;
-				}
+				frame[j] = wav.Get_Buffer(i + j) - 0.95 * wav.Get_Buffer(i + j - 1);
 			}
 			else{
 				frame[j] = 0;
 			}
-		}
-
-		// pre-emphasis
-		for (int j = length_frame - 1; j > 0; j--){
-			frame[j] = frame[j] - 0.95 * frame[j - 1];
 		}
 
 		// windowing
