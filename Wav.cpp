@@ -164,7 +164,9 @@ void Wav::Load(char path[]){
 	if (chunk != 0x61746164){
 		fprintf(stderr, "[Load] [not data]\n");
 	}
-	while (chunk != 0x61746164 && fread(&chunk, 4, 1, file) != EOF);
+	while (chunk != 0x61746164){
+		fread(&chunk, 4, 1, file);
+	}
 
 	fread(&length_wav, sizeof(int), 1, file);
 	data = (unsigned char*)realloc(data, length_wav);
@@ -215,7 +217,7 @@ void Wav::Set_Properties(int nChannels, int nSamplesPerSec, int wBitsPerSample){
 		waveformatex.wFormatTag = 0x0003;
 		break;
 	default:
-		fprintf(stderr, "[Set_Properties], [wBitsPerSample must be one of {8, 16, 32}.\n");
+		fprintf(stderr, "[Set_Properties], wBitsPerSample must be one of {8, 16, 32}\n");
 		return;
 	}
 	waveformatex.nChannels = nChannels;
@@ -251,7 +253,7 @@ void Wav::Play(int milliseconds){
 	waveOutPrepareHeader(hwaveout, &wavehdr, sizeof(wavehdr));
 	waveOutWrite(hwaveout, &wavehdr, sizeof(wavehdr));
 
-	Sleep(milliseconds);
+	for (int time = clock(); clock() - time < milliseconds;);
 
 	waveOutPause(hwaveout);
 	waveOutReset(hwaveout);
@@ -292,9 +294,7 @@ void Wav::Record(int milliseconds){
 	waveInAddBuffer(hwavein, &wavehdr, sizeof(wavehdr));
 	waveInStart(hwavein);
 
-	for (int i = 0; i < milliseconds && recording; i++){
-		Sleep(1);
-	}
+	for (int time = clock(); clock() - time < milliseconds && recording;);
 
 	waveInStop(hwavein);
 	waveInReset(hwavein);
@@ -303,6 +303,8 @@ void Wav::Record(int milliseconds){
 		return;
 	}
 	waveInClose(hwavein);
+
+	recording = false;
 }
 
 void Wav::Set_Buffer(int index, double value){
