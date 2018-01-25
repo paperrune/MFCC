@@ -35,10 +35,10 @@ void DCT(int direction, int length, double X[]){
 		Discrete_Cosine_Transform(direction, length, X);
 		return;
 	}
-	fprintf(stderr, "[DCT], [direction = {-1 (inversed transform), 1 (forward transform)}\n");
+	fprintf(stderr, "[DCT], direction = {-1 (inversed transform), 1 (forward transform)}\n");
 }
 void Fast_Fourier_Transform(int direction, int length, double Xr[], double Xi[]){
-	int log_length = (int)(log((double)length) / log(2.0));
+	int log_length = (int)log2((double)length);
 
 	double pi = 3.14159265358979323846;
 
@@ -83,14 +83,14 @@ void Fast_Fourier_Transform(int direction, int length, double Xr[], double Xi[])
 	}
 }
 void FFT(int direction, int length, double Xr[], double Xi[]){
-	int log_length = log((double)length) / log(2.0);
+	int log_length = (int)log2((double)length);
 
 	if (direction != 1 && direction != -1){
-		fprintf(stderr, "[FFT], [direction = {-1 (inversed transform), 1 (forward transform)}\n");
+		fprintf(stderr, "[FFT], direction = {-1 (inversed transform), 1 (forward transform)}\n");
 		return;
 	}
 	if (1 << log_length != length){
-		fprintf(stderr, "[FFT], [length must be a power of 2]\n");
+		fprintf(stderr, "[FFT], length must be a power of 2\n");
 		return;
 	}
 	Fast_Fourier_Transform(direction, length, Xr, Xi);
@@ -103,7 +103,7 @@ double Mel_Scale(int direction, double x){
 	case 1:
 		return 1125 * log(1 + x / 700.0);
 	}
-	fprintf(stderr, "[Mel_Scale], [direction = {-1 (inversed transform), 1 (forward transform)}\n");
+	fprintf(stderr, "[Mel_Scale], direction = {-1 (inversed transform), 1 (forward transform)}\n");
 	return 0;
 }
 
